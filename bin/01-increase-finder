@@ -1,0 +1,7 @@
+#! /usr/bin/env ruby
+
+require_relative "../lib/increase_finder.rb"
+
+path = ARGV.shift || fail("requires an input path")
+finder = IncreaseFinder.new(path)
+puts "Total: #{finder.increase_count}"
