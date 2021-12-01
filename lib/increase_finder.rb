@@ -8,11 +8,13 @@ class IncreaseFinder
     @values = values
   end
 
-  def pairs
-    SlidingWindow.new(values).windows(2)
-  end
-
   def increasing_pairs
     pairs.select { |a, b| b > a }
+  end
+
+  private
+
+  def pairs
+    SlidingWindow.new(values).windows(2)
   end
 end
