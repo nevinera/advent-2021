@@ -1,3 +1,5 @@
+require "pry"
+
 class IncreaseFinder
   attr_reader :path
 
@@ -17,12 +19,20 @@ class IncreaseFinder
     @_count ||= values.length
   end
 
-  def pairs
-    @_pairs ||= (1...count).map do |n|
-      from_value = values[n - 1]
-      to_value = values[n]
-      [from_value, to_value]
+  def sliding_window(array, window_size)
+    (0 .. (array.length - window_size)).map do |offset|
+      array.slice(offset, window_size)
     end
+  end
+
+  def sliding_sums(window_size)
+    sliding_window(values, window_size).map(&:sum)
+  end
+
+  # Problem 1 -------
+
+  def pairs
+    @pairs ||= sliding_window(values, 2)
   end
 
   def increasing_pairs
@@ -31,5 +41,19 @@ class IncreaseFinder
 
   def increase_count
     increasing_pairs.length
+  end
+
+  # Problem 2 --------
+
+  def window_pairs
+    sliding_window(sliding_sums(3), 2)
+  end
+
+  def increasing_sums
+    window_pairs.select { |a, b| b > a }
+  end
+
+  def increasing_sum_count
+    increasing_sums.count
   end
 end
