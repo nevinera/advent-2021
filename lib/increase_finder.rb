@@ -1,4 +1,4 @@
-require "pry"
+require_relative "./parser"
 
 class IncreaseFinder
   attr_reader :path
@@ -7,12 +7,8 @@ class IncreaseFinder
     @path = path
   end
 
-  def text
-    @_text ||= File.read(path)
-  end
-
   def values
-    @_values ||= text.split("\n").map(&:strip).map(&:to_i)
+    @_values ||= Parser.new(path).numbers
   end
 
   def count
