@@ -1,9 +1,0 @@
-#! /usr/bin/env ruby
-
-require_relative "../boot.rb"
-
-path = ARGV.shift || fail("requires an input path")
-values = Parser.new(path).numbers
-smoothed_values = SlidingWindow.new(values).window_sums(3)
-increase_finder = IncreaseFinder.new(smoothed_values)
-puts "Total: #{increase_finder.increasing_pairs.count}"

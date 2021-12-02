@@ -1,0 +1,27 @@
+#! /usr/bin/env ruby
+
+require_relative "../boot.rb"
+
+PROBLEMS = {
+  "1" => [Problem01, "01-depth-increases.txt"],
+  "2" => [Problem02, "01-depth-increases.txt"],
+}
+
+problem_number = ARGV.shift || nil
+
+def input_path(input_name)
+  File.expand_path("../../inputs/#{input_name}", __FILE__)
+end
+
+def problem_instance(problem_number)
+  problem_class, input_name = PROBLEMS.fetch(problem_number.to_s)
+  problem_class.new(input_path(input_name))
+end
+
+if problem_number
+  puts "Problem #{problem_number}: #{problem_instance(problem_number).answer}"
+else
+  PROBLEMS.each_key do |problem_number|
+    puts "Problem #{problem_number}: #{problem_instance(problem_number).answer}"
+  end
+end
