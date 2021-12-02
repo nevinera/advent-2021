@@ -3,6 +3,7 @@ GEM
   specs:
     coderay (1.1.3)
     diff-lcs (1.4.4)
+    memoist (0.16.2)
     method_source (1.0.0)
     pry (0.14.1)
       coderay (~> 1.1)
@@ -25,6 +26,7 @@ PLATFORMS
   x86_64-darwin-20
 
 DEPENDENCIES
+  memoist
   pry
   rspec
 
