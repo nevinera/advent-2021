@@ -20,4 +20,23 @@ describe Parser do
       it { is_expected.to eq([1, 2, 3, 4]) }
     end
   end
+
+  describe "#movements" do
+    subject(:movements) { parser.movements }
+
+    context "when the content is empty" do
+      let(:content) { "" }
+      it { is_expected.to eq([]) }
+    end
+
+    context "when there are some lines" do
+      let(:content) { "up 1\ndown 2\nforward 3\n" }
+      it { is_expected.to eq([["up", 1], ["down", 2], ["forward", 3]]) }
+    end
+
+    context "when those lines have random whitespace in them" do
+      let(:content) { " up 1 \ndown 2\t \nforward 3\n" }
+      it { is_expected.to eq([["up", 1], ["down", 2], ["forward", 3]]) }
+    end
+  end
 end
