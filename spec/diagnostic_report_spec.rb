@@ -87,4 +87,32 @@ describe DiagnosticReport do
       end
     end
   end
+
+  describe "#co2_scrubber_rating" do
+    subject(:rating) { report.co2_scrubber_rating }
+
+    context "when the process concludes early" do
+      let(:strings) { ["001", "011", "110"] }
+      # first filter removes the first two values ("1**")
+      it { is_expected.to have_attributes(to_s: "110") }
+      it { is_expected.to have_attributes(to_i: 6) }
+    end
+
+    context "when the process runs to completion" do
+      let(:strings) { ["111", "111", "000", "001"] }
+      # first filter is "0**", removes items 1-2
+      # second filter is "00*", removes nothing
+      # last filter is "000", removes item 4
+      it { is_expected.to have_attributes(to_s: "000") }
+      it { is_expected.to have_attributes(to_i: 0) }
+    end
+
+    context "when the process finishes with too many left" do
+      let(:strings) { ["000", "000"] }
+
+      it "raises ArgumentError" do
+        expect { rating }.to raise_error(ArgumentError, /multiple results/i)
+      end
+    end
+  end
 end

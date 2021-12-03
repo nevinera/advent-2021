@@ -37,6 +37,16 @@ class DiagnosticReport
     remaining.first
   end
 
+  memoize def co2_scrubber_rating
+    remaining = entries.dup
+    @length.times do |bit_number|
+      remaining = co2_reduce(remaining, bit_number)
+      break if remaining.length == 1
+    end
+    fail(ArgumentError, "Multiple results left at the end") if remaining.length != 1
+    remaining.first
+  end
+
   private
 
   # 0-indexed
@@ -70,6 +80,11 @@ class DiagnosticReport
 
   def oxygen_reduce(remaining, bit_number)
     requirement = most_common(remaining, bit_number) rescue 1
+    remaining.select { |e| e.bits[bit_number] == requirement }
+  end
+
+  def co2_reduce(remaining, bit_number)
+    requirement = least_common(remaining, bit_number) rescue 0
     remaining.select { |e| e.bits[bit_number] == requirement }
   end
 end
