@@ -12,13 +12,13 @@ class DiagnosticReport
   end
 
   memoize def gamma_rate
-    bits = (0...@length).map { |offset| most_common(offset) }
+    bits = (0...@length).map { |offset| most_common(entries, offset) }
     bit_string = bits.map(&:to_s).join
     DiagnosticEntry.new(bit_string)
   end
 
   memoize def epsilon_rate
-    bits = (0...@length).map { |offset| least_common(offset) }
+    bits = (0...@length).map { |offset| least_common(entries, offset) }
     bit_string = bits.map(&:to_s).join
     DiagnosticEntry.new(bit_string)
   end
@@ -30,18 +30,18 @@ class DiagnosticReport
   private
 
   # 0-indexed
-  memoize def most_common(n)
-    sum = entries.map { |e| e.bits[n] }.sum
-    if sum * 2 > entries.length
+  memoize def most_common(entry_list, n)
+    sum = entry_list.map { |e| e.bits[n] }.sum
+    if sum * 2 > entry_list.length
       1
-    elsif sum * 2 < entries.length
+    elsif sum * 2 < entry_list.length
       0
     else
       fail ArgumentError, "Underspecified problem - result not clear when bits are equally common"
     end
   end
 
-  memoize def least_common(n)
-    1 - most_common(n)
+  memoize def least_common(entry_list, n)
+    1 - most_common(entry_list, n)
   end
 end
