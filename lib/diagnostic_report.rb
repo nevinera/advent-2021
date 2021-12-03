@@ -41,7 +41,10 @@ class DiagnosticReport
 
   # 0-indexed
   memoize def most_common(entry_list, n)
-    sum = entry_list.map { |e| e.bits[n] }.sum
+    bits = entry_list.map { |e| e.bits[n] }
+    return bits.first if bits.uniq.length == 1
+
+    sum = bits.sum
     if sum * 2 > entry_list.length
       1
     elsif sum * 2 < entry_list.length
@@ -52,7 +55,17 @@ class DiagnosticReport
   end
 
   memoize def least_common(entry_list, n)
-    1 - most_common(entry_list, n)
+    bits = entry_list.map { |e| e.bits[n] }
+    return bits.first if bits.uniq.length == 1
+
+    sum = bits.sum
+    if sum * 2 > entry_list.length
+      0
+    elsif sum * 2 < entry_list.length
+      1
+    else
+      fail ArgumentError, "Underspecified problem - result not clear when bits are equally common"
+    end
   end
 
   def oxygen_reduce(remaining, bit_number)

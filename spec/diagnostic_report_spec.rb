@@ -40,8 +40,8 @@ describe DiagnosticReport do
     subject(:epsilon_rate) { report.epsilon_rate }
 
     context "when all bits have a least common value" do
-      let(:strings) { ["010", "110", "111"] }
-      it { is_expected.to have_attributes(to_s: "001") }
+      let(:strings) { ["110", "011", "101"] }
+      it { is_expected.to have_attributes(to_s: "000") }
     end
 
     context "when some bit has no least-common value" do
@@ -56,7 +56,7 @@ describe DiagnosticReport do
   describe "#power_consumption" do
     let(:strings) { ["010", "110", "111"] }
     subject(:power_consumption) { report.power_consumption }
-    it { is_expected.to eq(6) }
+    it { is_expected.to eq(18) }
   end
 
   describe "#oxygen_generator_rating" do
