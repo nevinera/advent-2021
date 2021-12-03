@@ -7,6 +7,25 @@ describe Parser do
   let(:path) { "/fake/path" }
   subject(:parser) { described_class.new(path) }
 
+  describe "#lines" do
+    subject(:lines) { parser.lines }
+
+    context "when file is empty" do
+      let(:content) { "" }
+      it { is_expected.to be_empty }
+    end
+
+    context "when file has content" do
+      let(:content) { "aaa\nbbb\nccc\n" }
+      it { is_expected.to eq(["aaa", "bbb", "ccc"]) }
+    end
+
+    context "when lines have whitespace at the edges" do
+      let(:content) { " aaa  \nbbb   \n\nccc" }
+      it { is_expected.to eq(["aaa", "bbb", "ccc"]) }
+    end
+  end
+
   describe "#numbers" do
     subject(:numbers) { parser.numbers }
 
