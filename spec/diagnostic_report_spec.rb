@@ -58,4 +58,33 @@ describe DiagnosticReport do
     subject(:power_consumption) { report.power_consumption }
     it { is_expected.to eq(6) }
   end
+
+  describe "#oxygen_generator_rating" do
+    subject(:rating) { report.oxygen_generator_rating }
+
+    context "when the process concludes early" do
+      let(:strings) { ["001", "011", "110"] }
+      # first filter removes the last value ("0**")
+      # second filter removes the first value ("01*") - 1 because of a 1-1 tie on digit two
+      it { is_expected.to have_attributes(to_s: "011") }
+      it { is_expected.to have_attributes(to_i: 3) }
+    end
+
+    context "when the process runs to completion" do
+      let(:strings) { ["111", "000", "100", "110"] }
+      # first filter is "1**", removes item 2
+      # second filter is "11*", removes item 3
+      # last filter is "111", removes item 4
+      it { is_expected.to have_attributes(to_s: "111") }
+      it { is_expected.to have_attributes(to_i: 7) }
+    end
+
+    context "when the process finishes with too many left" do
+      let(:strings) { ["001", "001"] }
+
+      it "raises ArgumentError" do
+        expect { rating }.to raise_error(ArgumentError, /multiple results/i)
+      end
+    end
+  end
 end

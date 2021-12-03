@@ -27,6 +27,16 @@ class DiagnosticReport
     gamma_rate.to_i * epsilon_rate.to_i
   end
 
+  memoize def oxygen_generator_rating
+    remaining = entries.dup
+    @length.times do |bit_number|
+      remaining = oxygen_reduce(remaining, bit_number)
+      break if remaining.length == 1
+    end
+    fail(ArgumentError, "Multiple results left at the end") if remaining.length != 1
+    remaining.first
+  end
+
   private
 
   # 0-indexed
@@ -43,5 +53,10 @@ class DiagnosticReport
 
   memoize def least_common(entry_list, n)
     1 - most_common(entry_list, n)
+  end
+
+  def oxygen_reduce(remaining, bit_number)
+    requirement = most_common(remaining, bit_number) rescue 1
+    remaining.select { |e| e.bits[bit_number] == requirement }
   end
 end
