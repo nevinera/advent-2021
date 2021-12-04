@@ -58,4 +58,18 @@ class BingoBoard
     unmarked_sum = unmarked_coords.map { |coords| values[coords] }.sum
     unmarked_sum * latest_call
   end
+
+  def print
+    (0..4).each do |row|
+      value_strings = (0..4).map do |col|
+        if marked?(row, col)
+          "[#{values[[row, col]]}]"
+        else
+          values[[row, col]].to_s
+        end
+      end
+
+      puts "% 4s % 4s % 4s % 4s % 4s" % value_strings
+    end
+  end
 end
