@@ -3,10 +3,6 @@ class BingoBoard
 
   # all the sets of points that represent a winning line, if filled
   LINES = [
-    # diagonls
-    (0..4).zip(0..4),
-    (0..4).to_a.reverse.zip(0..4),
-
     # columns
     (0..4).map { |n| [n, 0] },
     (0..4).map { |n| [n, 1] },

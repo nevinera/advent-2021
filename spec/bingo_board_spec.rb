@@ -63,16 +63,6 @@ describe BingoBoard do
       it { is_expected.to be_truthy }
     end
 
-    context "when the down-diagonal is marked" do
-      before { mark_all(1, 12, 23, 34, 2) }
-      it { is_expected.to be_truthy }
-    end
-
-    context "when the up-diagonal is marked" do
-      before { mark_all(41, 23, 32, 14, 5) }
-      it { is_expected.to be_truthy }
-    end
-
     context "when multiple lines are marked" do
       before { mark_all(1, 2, 3, 4, 5, 41, 32, 23, 14, 5) }
       it { is_expected.to be_truthy }
