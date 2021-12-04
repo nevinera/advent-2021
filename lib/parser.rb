@@ -20,9 +20,24 @@ class Parser
     end
   end
 
+  def bingo
+    calls = lines.shift.split(",").map(&:to_i)
+    boards = []
+    boards << read_board(lines) while lines.any?
+    [calls, boards]
+  end
+
   private
 
   def content
     @_content ||= File.read(path)
+  end
+
+  def read_board(lines)
+    # read five lines with five values each
+    board_lines = lines.shift(5)
+    board_lines.map do |line|
+      line.strip.split(/\s+/).map(&:to_i)
+    end
   end
 end

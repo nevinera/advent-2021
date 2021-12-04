@@ -58,4 +58,51 @@ describe Parser do
       it { is_expected.to eq([["up", 1], ["down", 2], ["forward", 3]]) }
     end
   end
+
+  describe "#bingo" do
+    subject(:bingo) { parser.bingo }
+
+    let(:content) do
+      <<~BINGO
+        1,2,3,4,5
+
+        10  1 18  9  7
+         1 11 10 18  3
+         1 11 10 18  3
+         1 11 10 18  3
+         1 11 10 18  3
+
+        11  1 18  9  7
+         1 11 10 18  3
+         1 11 10 18  3
+         1 11 10 18  3
+         1 11 10 18  3
+      BINGO
+    end
+
+    describe "calls" do
+      subject(:calls) { bingo.first }
+      it { is_expected.to eq([1, 2, 3, 4, 5]) }
+    end
+
+    describe "boards" do
+      subject(:boards) { bingo.last }
+
+      it { is_expected.to have_attributes(first: [
+        [10, 1, 18, 9, 7],
+        [1, 11, 10, 18, 3],
+        [1, 11, 10, 18, 3],
+        [1, 11, 10, 18, 3],
+        [1, 11, 10, 18, 3],
+      ]) }
+
+      it { is_expected.to have_attributes(last: [
+        [11, 1, 18, 9, 7],
+        [1, 11, 10, 18, 3],
+        [1, 11, 10, 18, 3],
+        [1, 11, 10, 18, 3],
+        [1, 11, 10, 18, 3],
+      ]) }
+    end
+  end
 end
