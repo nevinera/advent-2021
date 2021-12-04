@@ -21,14 +21,19 @@ class BingoGame
   end
 
   def loser(calls)
+    remaining_boards = boards
     calls.each do |value|
       boards.each { |board| board.mark(value) }
 
-      losing_boards = boards.reject(&:complete?)
-      fail(ArgumentError, "Multiple losers") if losing_boards.length < 1
+      completed_boards = remaining_boards.select(&:complete?)
+      remaining_boards -= completed_boards
 
-      if losing_boards.length == 1
-        return losing_boards.first
+      if remaining_boards.empty?
+        if completed_boards.length > 1
+          fail(ArgumentError, "Multiple losers")
+        else
+          return completed_boards.first
+        end
       end
     end
 

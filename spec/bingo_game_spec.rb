@@ -78,7 +78,7 @@ describe BingoGame do
     end
 
     context "when one board is completed last" do
-      let(:calls) { [15, 14, 13, 12, 11] }
+      let(:calls) { [15, 14, 13, 12, 11, 24] }
       it { is_expected.to eq(board_b) }
     end
   end
