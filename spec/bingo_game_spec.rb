@@ -57,4 +57,29 @@ describe BingoGame do
       it { is_expected.to eq(board_c) }
     end
   end
+
+  describe "#loser" do
+    subject(:loser) { game.loser(calls) }
+
+    context "when the game is too short and there are still multiple losers" do
+      let(:calls) { [1, 2, 3, 4] }
+
+      it "raises an argument error" do
+        expect { loser }.to raise_error(ArgumentError, /No loser found/)
+      end
+    end
+
+    context "when the last few boards are all completed simultaneously" do
+      let(:calls) { [24, 15, 14, 13, 12, 11] }
+
+      it "raises an argument error" do
+        expect { loser }.to raise_error(ArgumentError, /Multiple losers/)
+      end
+    end
+
+    context "when one board is completed last" do
+      let(:calls) { [15, 14, 13, 12, 11] }
+      it { is_expected.to eq(board_b) }
+    end
+  end
 end
