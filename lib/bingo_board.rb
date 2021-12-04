@@ -58,8 +58,4 @@ class BingoBoard
     unmarked_sum = unmarked_coords.map { |coords| values[coords] }.sum
     unmarked_sum * latest_call
   end
-
-  def ==(other_board)
-    values == other_board.values
-  end
 end

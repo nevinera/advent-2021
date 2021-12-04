@@ -14,7 +14,7 @@ class Problem07
     game.winner(calls)
   end
 
-  def boards
+  memoize def boards
     parsed.last.map { |board_data| BingoBoard.new(board_data) }
   end
 
