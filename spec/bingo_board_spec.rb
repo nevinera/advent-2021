@@ -8,8 +8,11 @@ describe BingoBoard do
       [41, 42, 43, 44, 2],
     ]
   end
-
   subject(:board) { described_class.new(values) }
+
+  def mark_all(*values)
+    values.each { |value| board.mark(value) }
+  end
 
   it "has the expected initial state" do
     expect(board.value(0, 0)).to eq(1)
@@ -39,10 +42,6 @@ describe BingoBoard do
 
   describe "#complete?" do
     subject(:complete?) { board.complete? }
-
-    def mark_all(*values)
-      values.each { |value| board.mark(value) }
-    end
 
     context "when no marks are present" do
       before { expect(board.marked).to be_empty }
@@ -77,6 +76,26 @@ describe BingoBoard do
     context "when multiple lines are marked" do
       before { mark_all(1, 2, 3, 4, 5, 41, 32, 23, 14, 5) }
       it { is_expected.to be_truthy }
+    end
+  end
+
+  describe "#score" do
+    subject(:score) { board.score }
+
+    context "before the board is completed" do
+      before { mark_all(1, 33, 14, 5) }
+      before { expect(board).not_to be_complete }
+      it { is_expected.to be_nil }
+    end
+
+    context "when the board is entirely filled" do
+      before { board.values.each_value { |v| board.mark(v) } }
+      it { is_expected.to be_zero }
+    end
+
+    context "when the board has a line filled" do
+      before { mark_all(11, 12, 13, 14, 15) }
+      it { is_expected.to eq((board.values.values.sum - (11 + 12 + 13 + 14 + 15)) * 15) }
     end
   end
 end

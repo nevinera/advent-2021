@@ -1,5 +1,5 @@
 class BingoBoard
-  attr_reader :values, :marked
+  attr_reader :values, :marked, :latest_call
 
   # all the sets of points that represent a winning line, if filled
   LINES = [
@@ -25,6 +25,7 @@ class BingoBoard
   def initialize(rows)
     @values = {}
     @marked = {}
+    @latest_call
 
     rows.each_with_index do |row, row_number|
       row.each_with_index do |value, col_number|
@@ -41,6 +42,7 @@ class BingoBoard
     @values.each_pair do |coords, board_value|
       @marked[coords] = true if board_value == value
     end
+    @latest_call = value
   end
 
   def marked?(row, col)
@@ -52,5 +54,12 @@ class BingoBoard
       return true if coords.all? { |row, col| marked?(row, col) }
     end
     false
+  end
+
+  def score
+    return nil unless complete?
+    unmarked_coords = values.keys - marked.keys
+    unmarked_sum = unmarked_coords.map { |coords| values[coords] }.sum
+    unmarked_sum * latest_call
   end
 end
