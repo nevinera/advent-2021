@@ -53,8 +53,8 @@ describe BingoGame do
     end
 
     context "when one board wins" do
-      let(:calls) { [7, 1, 13, 19, 20, 26] }
-      it { is_expected.to eq(board_b) }
+      let(:calls) { [21, 23, 22, 18, 24, 27] }
+      it { is_expected.to eq(board_c) }
     end
   end
 end
