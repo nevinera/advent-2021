@@ -105,4 +105,21 @@ describe Parser do
       ]) }
     end
   end
+
+  describe "#segments" do
+    subject(:segments) { parser.segments }
+
+    let(:content) do
+      <<~SEGMENTS
+        0,9 -> 5,9
+        8,0 -> 0,8
+        9,4 -> 3,4
+      SEGMENTS
+    end
+
+    it { is_expected.to have_attributes(length: 3) }
+    it { is_expected.to include(Segment.from_coordinates(0, 9, 5, 9)) }
+    it { is_expected.to include(Segment.from_coordinates(8, 0, 0, 8)) }
+    it { is_expected.to include(Segment.from_coordinates(9, 4, 3, 4)) }
+  end
 end

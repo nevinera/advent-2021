@@ -27,6 +27,16 @@ class Parser
     [calls, boards]
   end
 
+  def segments
+    lines.map do |line|
+      pairs = line.split(/\s+->\s+/)
+      points = pairs
+        .map { |pair| pair.split(",").map(&:strip).map(&:to_i) }
+        .map { |x, y| Point.new(x, y) }
+      Segment.new(*points)
+    end
+  end
+
   private
 
   def content
