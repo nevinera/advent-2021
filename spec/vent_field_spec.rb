@@ -55,4 +55,23 @@ describe VentField do
       end
     end
   end
+
+  describe "#magnitude_grid" do
+    subject(:grid) { field.magnitude_grid }
+
+    before do
+      field.add_segment(Segment.from_coordinates(0, 0, 0, 3))
+      field.add_segment(Segment.from_coordinates(2, 1, 2, 3))
+      field.add_segment(Segment.from_coordinates(3, 2, 1, 2))
+    end
+
+    it "looks like expected" do
+      expect(grid).to eq(<<~GRID)
+        1...
+        1.1.
+        1121
+        1.1.
+      GRID
+    end
+  end
 end
