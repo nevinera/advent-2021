@@ -33,30 +33,91 @@ describe Segment do
     end
   end
 
+  describe "#diagonal?" do
+    subject(:diagonal?) { segment.diagonal? }
+
+    context "up and right" do
+      let(:point_b) { Point.new(6, 11) }
+      it { is_expected.to be_truthy }
+    end
+
+    context "down and right" do
+      let(:point_b) { Point.new(6, 7) }
+      it { is_expected.to be_truthy }
+    end
+
+    context "up and left" do
+      let(:point_b) { Point.new(2, 11) }
+      it { is_expected.to be_truthy }
+    end
+
+    context "down and left" do
+      let(:point_b) { Point.new(2, 7) }
+      it { is_expected.to be_truthy }
+    end
+
+    context "a point" do
+      let(:point_b) { point_a }
+      it { is_expected.to be_truthy }
+    end
+
+    context "not diagonal" do
+      let(:point_b) { Point.new(0, 0) }
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe "#crossed_points" do
     subject(:crossed_points) { segment.crossed_points }
 
     context "when the segment is diagonal" do
-      before { expect(segment).not_to be_orthonormal }
+      let(:point_b) { Point.new(2, 11) }
+      before { expect(segment).to be_diagonal }
 
-      it "raises an ArgumentError" do
-        expect { crossed_points }.to raise_error(ArgumentError, /Orthonormal segments only/)
+      context "up and right" do
+        let(:point_b) { Point.new(6, 11) }
+        it { is_expected.to contain_exactly(Point.new(6, 11), Point.new(5, 10), Point.new(4, 9)) }
+      end
+
+      context "down and right" do
+        let(:point_b) { Point.new(6, 7) }
+        it { is_expected.to contain_exactly(Point.new(6, 7), Point.new(5, 8), Point.new(4, 9)) }
+      end
+
+      context "up and left" do
+        let(:point_b) { Point.new(2, 11) }
+        it { is_expected.to contain_exactly(Point.new(2, 11), Point.new(3, 10), Point.new(4, 9)) }
+      end
+
+      context "down and left" do
+        let(:point_b) { Point.new(2, 7) }
+        it { is_expected.to contain_exactly(Point.new(2, 7), Point.new(3, 8), Point.new(4, 9)) }
       end
     end
 
-    context "when the segment is horizontal" do
-      let(:point_b) { Point.new(6, 9) }
-      it { is_expected.to contain_exactly(Point.new(4, 9), Point.new(5, 9), Point.new(6, 9)) }
+    context "when the segment is orthonormal" do
+      before { expect(segment).to be_orthonormal }
+
+      context "when the segment is horizontal" do
+        let(:point_b) { Point.new(6, 9) }
+        it { is_expected.to contain_exactly(Point.new(4, 9), Point.new(5, 9), Point.new(6, 9)) }
+      end
+
+      context "when the segment is vertical" do
+        let(:point_b) { Point.new(4, 7) }
+        it { is_expected.to contain_exactly(Point.new(4, 7), Point.new(4, 8), Point.new(4, 9)) }
+      end
+
+      context "when the segment is a point" do
+        let(:point_b) { point_a }
+        it { is_expected.to contain_exactly(point_a) }
+      end
     end
 
-    context "when the segment is vertical" do
-      let(:point_b) { Point.new(4, 7) }
-      it { is_expected.to contain_exactly(Point.new(4, 7), Point.new(4, 8), Point.new(4, 9)) }
-    end
-
-    context "when the segment is a point" do
-      let(:point_b) { point_a }
-      it { is_expected.to contain_exactly(point_a) }
+    context "when segment is neither diagonal nor orthonormal" do
+      it "raises an ArgumentError" do
+        expect { crossed_points }.to raise_error(ArgumentError, /unsupported segment/)
+      end
     end
   end
 

@@ -13,19 +13,19 @@ class Segment
     a.x == b.x || a.y == b.y
   end
 
+  def diagonal?
+    (a.x - b.x).abs == (a.y - b.y).abs
+  end
+
   def crossed_points
-    fail(ArgumentError, "Orthonormal segments only, for now") unless orthonormal?
+    fail(ArgumentError, "unsupported segment") unless orthonormal? || diagonal?
 
-    # these describe a *box*, but for orthonormal segments the box is always the segment itself.
-    xrange = Range.new(*[a.x, b.x].sort)
-    yrange = Range.new(*[a.y, b.y].sort)
-
-    [].tap do |pairs|
-      xrange.each do |xval|
-        yrange.each do |yval|
-          pairs << Point.new(xval, yval)
-        end
-      end
+    if a.x == b.x
+      birange(a.y, b.y).map { |y| Point.new(a.x, y) }
+    elsif a.y == b.y
+      birange(a.x, b.x).map { |x| Point.new(x, a.y) }
+    else
+      birange(a.x, b.x).zip(birange(a.y, b.y)).map { |x, y| Point.new(x, y) }
     end
   end
 
@@ -35,5 +35,17 @@ class Segment
 
   def inspect
     "Segment{(#{a.x},#{a.y}) -> (#{b.x},#{b.y})}"
+  end
+
+  private
+
+  # Ranges don't support decreasing values, so this lets us not worry about which order our
+  # indices are in. (We don't mind concretizing our Ranges)
+  def birange(i, j)
+    if i <= j
+      (i .. j).to_a
+    else
+      (j .. i).to_a.reverse
+    end
   end
 end
