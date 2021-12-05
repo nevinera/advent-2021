@@ -11,6 +11,7 @@ PROBLEMS = {
   "6" => [Problem06, "05-report.txt"],
   "7" => [Problem07, "07-bingo.txt"],
   "8" => [Problem08, "07-bingo.txt"],
+  "9" => [Problem09, "09-segments.txt"],
 }
 
 problem_number = ARGV.shift || nil
