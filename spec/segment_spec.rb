@@ -59,4 +59,28 @@ describe Segment do
       it { is_expected.to contain_exactly(point_a) }
     end
   end
+
+  describe "#==" do
+    subject(:equals) { segment == other }
+
+    context "when made from the same points in the same order" do
+      let(:other) { Segment.new(point_a, point_b) }
+      it { is_expected.to be_truthy }
+    end
+
+    context "when made from the same points in reverse order" do
+      let(:other) { Segment.new(point_b, point_a) }
+      it { is_expected.to be_truthy }
+    end
+
+    context "when made from different points" do
+      let(:other) { Segment.from_coordinates(0, 0, 0, 0) }
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe "#inspect" do
+    subject(:inspect) { segment.inspect }
+    it { is_expected.to eq("Segment{(4,9) -> (6,8)}") }
+  end
 end

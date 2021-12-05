@@ -40,4 +40,9 @@ describe Point do
       end
     end
   end
+
+  describe "#inspect" do
+    subject(:inspect) { point.inspect }
+    it { is_expected.to eq("Point(5,7)") }
+  end
 end

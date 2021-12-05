@@ -28,4 +28,12 @@ class Segment
       end
     end
   end
+
+  def ==(other)
+    (a == other.a && b == other.b) || (a == other.b && b == other.a)
+  end
+
+  def inspect
+    "Segment{(#{a.x},#{a.y}) -> (#{b.x},#{b.y})}"
+  end
 end
