@@ -46,12 +46,12 @@ describe VentField do
       end
     end
 
-    context "when the segment is diagonal" do
-      let(:segment_diagonal) { Segment.from_coordinates(1, 1, 2, 2) }
+    context "when the segment is disallowed" do
+      let(:segment_neither) { Segment.from_coordinates(1, 1, 2, 3) }
 
       it "raises an ArgumentError" do
-        expect { field.add_segment(segment_diagonal) }
-          .to raise_error(ArgumentError, /orthonormal segments only/i)
+        expect { field.add_segment(segment_neither) }
+          .to raise_error(ArgumentError, /unsupported segment/i)
       end
     end
   end
