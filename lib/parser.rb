@@ -9,6 +9,10 @@ class Parser
     @_lines ||= content.split("\n").reject { |ln| ln.empty? }.map(&:strip)
   end
 
+  def comma_separated_numbers
+    content.split(/[,\n]+/).map(&:strip).reject(&:empty?).map(&:to_i)
+  end
+
   def numbers
     @_numbers ||= lines.map(&:strip).map(&:to_i)
   end

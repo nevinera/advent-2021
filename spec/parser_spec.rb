@@ -26,6 +26,35 @@ describe Parser do
     end
   end
 
+  describe "#comma_separated_numbers" do
+    subject(:numbers) { parser.comma_separated_numbers }
+
+    context "when the file is empty" do
+      let(:content) { "" }
+      it { is_expected.to eq([]) }
+    end
+
+    context "when the file has a few numbers" do
+      let(:content) { "2,5,4,3" }
+      it { is_expected.to eq([2, 5, 4, 3]) }
+
+      context "with whitespace around them" do
+        let(:content) { "  2, 5  ,4,\t3\n " }
+        it { is_expected.to eq([2, 5, 4, 3]) }
+      end
+    end
+
+    context "when there are multiple lines" do
+      let(:content) { "2,5\n4,3" }
+      it { is_expected.to eq([2, 5, 4, 3]) }
+
+      context "with whitespace around them" do
+        let(:content) { "  2, 5 \n ,4,\t3\n " }
+        it { is_expected.to eq([2, 5, 4, 3]) }
+      end
+    end
+  end
+
   describe "#numbers" do
     subject(:numbers) { parser.numbers }
 
