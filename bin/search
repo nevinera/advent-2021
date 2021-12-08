@@ -1,0 +1,14 @@
+#! /usr/bin/env ruby
+
+require_relative "../boot"
+
+path = ARGV.shift
+p = Parser.new(path)
+
+offset = 0
+displays = p.displays.map do |pd|
+  offset += 1
+  Display.new(offset, pd.first, pd.last)
+end
+
+puts displays.map(&:value).sum

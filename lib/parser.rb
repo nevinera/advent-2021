@@ -41,6 +41,16 @@ class Parser
     end
   end
 
+  def displays
+    lines.map do |line|
+      combos_s, digits_s = line.split(" | ")
+      [
+        combos_s.split(" "),
+        digits_s.split(" "),
+      ]
+    end
+  end
+
   private
 
   def content
