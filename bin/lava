@@ -1,0 +1,20 @@
+#! /usr/bin/env ruby
+
+require_relative "../boot"
+
+path = ARGV.shift
+text = File.read(path)
+lava = Lava.new(text)
+
+puts lava.low_points.count
+
+puts "low points:"
+lava.low_points.each { |lp| puts " - (#{lp.first}, #{lp.last}) --> #{lava.grid[lp]}" }
+
+puts "total: #{lava.low_point_risk_score_total}"
+
+
+puts "basin sizes: #{lava.largest_basin_sizes.join(", ")}"
+puts "product: #{lava.basin_size_product}"
+
+binding.pry
