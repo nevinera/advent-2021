@@ -21,24 +21,33 @@ class Chunks
   # return true if complete, false if incomplete, raise ParseError if corrupt
   memoize def process_line
     @line.chars.each do |char|
-      puts "Encountered a #{char}"
-      puts "   Stack: #{@stack.join}"
       if OPENINGS.include?(char)
-        puts "   opening -> pushing #{char}"
         @stack.push(char)
       elsif CLOSINGS.include?(char)
         expected = MAPPING.fetch(@stack.pop)
-        puts "   closing -> popping #{expected}"
         unless expected == char
-          puts "      does not match"
           raise ParseError.new(char, "unexpected closing character encountered")
-        else
-          puts "      matches"
         end
       end
     end
 
     @stack.empty?
+  end
+
+  memoize def missing
+    process_line
+    @stack.reverse.map { |c| MAPPING.fetch(c) }
+  end
+
+  MISSING_VALUE = {
+    ")" => 1,
+    "]" => 2,
+    "}" => 3,
+    ">" => 4,
+  }
+
+  memoize def missing_score
+    missing.reduce(0) { |total, c| total * 5 + MISSING_VALUE.fetch(c) }
   end
 
   class ParseError < StandardError

@@ -6,16 +6,27 @@ path = ARGV.shift
 text = File.read(path)
 lines = text.split("\n")
 
-scores = lines.select { |ln| ln =~ /\S/ }.map do |line|
+ac_scores = []
+scores = []
+
+lines.select { |ln| ln =~ /\S/ }.map do |line|
   begin
     chunks = Chunks.new(line)
     chunks.process_line
-    puts "no problems"
-    0
+    if chunks.missing.empty?
+      puts "no problems"
+    else
+      puts "missing: #{chunks.missing} -> #{chunks.missing_score}"
+      ac_scores << chunks.missing_score
+    end
   rescue Chunks::ParseError => e
     puts "Got an unexpected #{e.encountered}"
-    e.score
+    scores << e.score
   end
 end
 
-puts scores.sum
+puts "part 1 total: #{scores.sum}"
+
+middle = (ac_scores.length - 1) / 2
+puts "part 2 middle: #{ac_scores.sort[middle]}"
+
