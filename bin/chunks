@@ -1,0 +1,21 @@
+#! /usr/bin/env ruby
+
+require_relative "../boot"
+
+path = ARGV.shift
+text = File.read(path)
+lines = text.split("\n")
+
+scores = lines.select { |ln| ln =~ /\S/ }.map do |line|
+  begin
+    chunks = Chunks.new(line)
+    chunks.process_line
+    puts "no problems"
+    0
+  rescue Chunks::ParseError => e
+    puts "Got an unexpected #{e.encountered}"
+    e.score
+  end
+end
+
+puts scores.sum
