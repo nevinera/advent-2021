@@ -1,0 +1,11 @@
+#! /usr/bin/env ruby
+
+require_relative "../boot"
+
+path = ARGV.shift
+text = File.read(path)
+octo = Octopus.new(text)
+
+steps = ARGV.shift.to_i
+values, count = octo.step(steps)
+puts "after #{steps} steps: #{count}"
