@@ -40,9 +40,7 @@ class Map
 
         next if tail == "end"
 
-        potentials = edges[tail].select do |n|
-          upper_nodes.include?(n) || !path.include?(n)
-        end
+        potentials = edges[tail].select { |n| allowable?(path, n) }
 
         if potentials.empty?
           terminal_paths << path
@@ -61,6 +59,16 @@ class Map
       current_paths = new_paths
       new_paths = []
     end
+  end
+
+  def allowable?(path, node)
+    return false if node == "start"
+    return true if upper_nodes.include?(node)
+    return true unless path.include?(node)
+
+    # then only allowable if we haven't yet used our double-visit
+    lowers = path.select { |p| p == p.downcase }
+    lowers.count == lowers.uniq.count
   end
 
   memoize def paths
