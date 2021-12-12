@@ -1,0 +1,10 @@
+#! /usr/bin/env ruby
+
+require_relative "../boot"
+
+path = ARGV.shift
+text = File.read(path)
+map = Map.new(text)
+
+puts "all paths: #{map.all_paths.count}"
+puts "complete paths: #{map.paths.count}"
