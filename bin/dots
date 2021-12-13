@@ -1,0 +1,17 @@
+#! /usr/bin/env ruby
+
+require_relative "../boot"
+
+path = ARGV.shift
+text = File.read(path)
+dots = Dots.new(text)
+
+grid = dots.initial_grid
+dots.print(grid)
+
+dots.folds.each do |dir, val|
+  grid = dots.fold(dir, val, grid)
+  dots.print(grid)
+end
+
+puts "visible points: #{grid.size}"
