@@ -1,0 +1,31 @@
+#! /usr/bin/env ruby
+
+require_relative "../boot"
+
+path = ARGV.shift
+text = File.read(path)
+poly = Poly.new(text)
+
+count = ARGV.shift.to_i
+
+(0..count).each do |n|
+  poly.after(n)
+  puts "after #{n} steps"
+end
+
+s = poly.after(count)
+
+counts = {}
+s.chars.each do |c|
+  counts[c] ||= 0
+  counts[c] += 1
+end
+
+puts "character counts:"
+counts.each_pair do |c, n|
+  puts "  #{c} -> #{n}"
+end
+
+puts "max: #{counts.values.max}"
+puts "min: #{counts.values.min}"
+puts "diff: #{counts.values.max - counts.values.min}"
