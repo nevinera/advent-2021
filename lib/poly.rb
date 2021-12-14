@@ -20,24 +20,46 @@ class Poly
     end.to_h
   end
 
-  def transform(s)
-    s.zip(insertions(s)).flatten.compact
-  end
-
-  def insertions(s)
-    pairs(s).map do |pair|
-      rules.fetch(pair, nil)
+  memoize def counts_for(a, b, after)
+    if after == 0 || !rules.include?([a, b])
+      a == b ? {a => 2} : {a => 1, b => 1}
+    elsif rules.include?([a, b])
+      m = rules.fetch([a, b])
+      lc = counts_for(a, m, after - 1)
+      rc = counts_for(m, b, after - 1)
+      count_merge(lc, rc, m)
     end
   end
 
-  def pairs(s)
-    (0..(s.length - 2)).map do |offset|
-      s.slice(offset, 2)
-    end
+  def count_merge(lc, rc, m)
+    items = (lc.keys + rc.keys).uniq
+    items.map do |item|
+      total = lc.fetch(item, 0) + rc.fetch(item, 0)
+      total -= 1 if item == m
+      [item, total]
+    end.to_h
   end
 
   memoize def after(n)
-    return initial if n <= 0
-    transform(after(n - 1))
+    s = initial
+    offsets = (0..(s.length - 2)).to_a
+    pairs = offsets.map { |offset| initial.slice(offset, 2) }
+
+    counts = pairs.map { |a, b| counts_for(a, b, n) }
+
+    count_sum = {}
+    counts.each do |count|
+      count.each_pair do |value, lc|
+        count_sum[value] ||= 0
+        count_sum[value] += lc
+      end
+    end
+
+    double_counted = s.slice(1, s.length - 2)
+    double_counted.each do |v|
+      count_sum[v] -= 1
+    end
+
+    count_sum
   end
 end

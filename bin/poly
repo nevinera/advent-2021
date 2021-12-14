@@ -9,21 +9,12 @@ poly = Poly.new(text)
 count = ARGV.shift.to_i
 
 (0..count).each do |n|
-  poly.after(n)
-  puts "after #{n} steps"
+  puts "step #{n}: #{poly.after(n).inspect}"
 end
 
-s = poly.after(count)
-
-counts = {}
-s.each do |c|
-  counts[c] ||= 0
-  counts[c] += 1
-end
-
-puts "character counts:"
-counts.each_pair do |c, n|
-  puts "  #{c} -> #{n}"
+counts = poly.after(count)
+counts.each_pair do |key, n|
+  puts "#{key} -> #{n}"
 end
 
 puts "max: #{counts.values.max}"
