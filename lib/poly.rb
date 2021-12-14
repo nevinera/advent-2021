@@ -5,27 +5,23 @@ class Poly
     @text = text
   end
 
-  memoize def after(n)
-    return initial_string if n <= 0
-    transform(after(n - 1))
-  end
-
   memoize def lines
     @text.split("\n")
   end
 
-  memoize def initial_string
-    lines.first.strip
+  memoize def initial
+    lines.first.strip.chars
   end
 
   memoize def rules
     lines.slice(2, lines.length).map do |rule_line|
-      rule_line.split(" -> ").map(&:strip)
+      left, right = rule_line.split(" -> ").map(&:strip)
+      [left.chars, right]
     end.to_h
   end
 
   def transform(s)
-    s.chars.zip(insertions(s)).flatten.compact.join
+    s.zip(insertions(s)).flatten.compact
   end
 
   def insertions(s)
@@ -38,5 +34,10 @@ class Poly
     (0..(s.length - 2)).map do |offset|
       s.slice(offset, 2)
     end
+  end
+
+  memoize def after(n)
+    return initial if n <= 0
+    transform(after(n - 1))
   end
 end

@@ -16,7 +16,7 @@ end
 s = poly.after(count)
 
 counts = {}
-s.chars.each do |c|
+s.each do |c|
   counts[c] ||= 0
   counts[c] += 1
 end
