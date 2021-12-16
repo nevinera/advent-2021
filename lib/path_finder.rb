@@ -6,7 +6,7 @@ class PathFinder
     @text = text
   end
 
-  memoize def initial
+  memoize def initial_single
     lines = @text.split("\n").map(&:strip)
     values = lines.map { |line| line.chars.map(&:to_i) }
 
@@ -17,9 +17,35 @@ class PathFinder
       end
     end
 
+    h
+  end
+
+  memoize def initial
+    grid_offsets = []
+    (0..4).each { |gx| (0..4).each { |gy| grid_offsets << [gx, gy] } }
+
+    grids = grid_offsets.map { |gx, gy| shifted_grid(gx, gy) }
+    h = grids.reduce(&:merge)
+
     h[[0, 0]] = 0
 
     h
+  end
+
+  def shifted_grid(gx, gy)
+    additional = gx + gy
+    width = initial_single.keys.map(&:first).max + 1
+    height = initial_single.keys.map(&:last).max + 1
+
+    initial_single.map do |pair, value|
+      new_coords = [
+        pair.first + (gx * width),
+        pair.last + (gy * height),
+      ]
+      new_value = value + additional
+      new_value -= 9 if new_value > 9
+      [new_coords, new_value]
+    end.to_h
   end
 
   memoize def starting_point
@@ -33,11 +59,22 @@ class PathFinder
     [max_x, max_y]
   end
 
+  memoize def total_width
+    destination.first
+  end
+
+  memoize def total_height
+    destination.last
+  end
 
   def total
     fill = initial
     (1..10_000).each do |n|
-      fill = reduce(fill)
+      if n % 10 == 0
+        puts "\n\n\n\n\n"
+        print(n, fill)
+      end
+      reduce(fill)
       # print(n, fill)
       return n if fill[destination] == 0
     end
@@ -45,20 +82,17 @@ class PathFinder
   end
 
   def reduce(grid)
-    next_grid = {}
+    reduced = Set.new
+
     grid.each_pair do |coords, prior|
-      if grid[coords].zero?
-        next_grid[coords] = 0
-      elsif adjacent_to_zero?(grid, coords)
-        next_grid[coords] = grid[coords] - 1
-      else
-        next_grid[coords] = grid[coords]
-      end
+      reduced << coords if !grid[coords].zero? && adjacent_to_zero?(grid, coords)
     end
-    next_grid
+
+    reduced.each {|pair| grid[pair] -= 1 }
+    grid
   end
 
-  def adjacent(pair)
+  memoize def adjacent(pair)
     x, y = pair
     [
       [x-1, y],

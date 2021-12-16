@@ -5,6 +5,10 @@ require_relative "../boot"
 path = ARGV.shift
 text = File.read(path)
 pathfinder = PathFinder.new(text)
+
+puts "destination: #{pathfinder.destination}"
+pathfinder.print(0, pathfinder.initial)
+
 total = pathfinder.total
 
 puts "total path length: #{total}"
