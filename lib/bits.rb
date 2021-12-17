@@ -88,7 +88,10 @@ class Bits
   end
 
   class Packet
+    extend Memoist
     attr_accessor :version, :type_id, :value, :length_type, :length, :packets
+
+    TYPES = {0 => :sum, 1 => :product, 2 => :min, 3 => :max, 4 => :value, 5 => :gt, 6 => :lt, 7 => :eq}
 
     def initialize
       @packets = []
@@ -98,15 +101,32 @@ class Bits
       {
         version: version,
         type_id: type_id,
+        type: TYPES.fetch(type_id),
         value: value,
         length_type: length_type,
         length: length,
         packets: packets.any? ? packets.map(&:to_h) : nil,
+        result: result,
       }.compact
     end
 
     def to_s
       to_h.to_json
+    end
+
+    memoize def result
+      case type_id
+      when 0 then packets.map(&:result).reduce(&:+)
+      when 1 then packets.map(&:result).reduce(&:*)
+      when 2 then packets.map(&:result).min
+      when 3 then packets.map(&:result).max
+      when 4 then value
+      when 5 then packets[0].result > packets[1].result ? 1 : 0
+      when 6 then packets[0].result < packets[1].result ? 1 : 0
+      when 7 then packets[0].result == packets[1].result ? 1 : 0
+      else
+        fail "unrecognized type_id"
+      end
     end
   end
 end

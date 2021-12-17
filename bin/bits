@@ -17,3 +17,4 @@ while p = pending_packets.shift
 end
 
 puts "total versions: #{total_version}"
+puts "value of outer packet: #{packet.result}"
