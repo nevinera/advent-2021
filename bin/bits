@@ -1,0 +1,19 @@
+#! /usr/bin/env ruby
+
+require_relative "../boot"
+
+packet = ARGV.shift
+bits = Bits.new(packet)
+puts "bits: #{bits.initial_bytes.map(&:to_s).join}"
+
+packet = bits.consume_packet(bits.initial_bytes.dup)
+puts JSON.pretty_generate(packet.to_h)
+
+total_version = 0
+pending_packets = [packet]
+while p = pending_packets.shift
+  pending_packets.concat(p.packets) if p.packets.any?
+  total_version += p.version
+end
+
+puts "total versions: #{total_version}"
