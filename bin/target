@@ -1,0 +1,11 @@
+#! /usr/bin/env ruby
+
+require_relative "../boot"
+
+path = ARGV.shift
+text = File.read(path)
+target = Target.new(text)
+
+
+c = (1..140).to_a.product((-177..177).to_a).count { |x, y| target.hit?(x, y) }
+puts c
