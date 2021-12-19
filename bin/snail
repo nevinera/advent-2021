@@ -1,0 +1,29 @@
+#! /usr/bin/env ruby
+
+require "json"
+require_relative "../boot"
+
+path = ARGV.shift || fail
+text = File.read(path)
+lines = text.split("\n").map(&:strip)
+list = lines.map { |line| JSON.parse(line) }
+
+# --- part 1 -----
+values = list.map { |a| Snail.tree(a) }
+sum = values.reduce(&:+)
+puts "part 1"
+puts "sum: #{sum.to_a.to_json}"
+puts "magnitude: #{sum.magnitude}"
+
+puts "\n\n\n"
+
+# --- part 2 ------
+# need to rebuild the trees for each operation, because reduce is destructive, and
+# we'll be reducing trees including the same values more than once
+array_pairs = list.product(list)
+mags = array_pairs.map do |a1, a2|
+  (Snail.tree(a1) + Snail.tree(a2)).magnitude
+end
+
+puts "part 2"
+puts "Maximum magnitude: #{mags.max}"
